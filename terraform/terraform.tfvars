@@ -1,0 +1,6 @@
+ENV       = "fowlart"
+LOCATION  = "northeurope"
+
+
+
+
