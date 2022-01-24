@@ -1,12 +1,11 @@
 package main.scala
 
-import org.apache.log4j.spi.LoggerFactory
 import org.apache.spark.sql.{AnalysisException, SaveMode, SparkSession}
 
 import java.io.{File, FileInputStream}
 import java.util.Properties
 
-object EntryPoint extends App {
+object FileTransferer extends App {
 
 
   def getListOfFiles(dir: String): List[File] = {
@@ -19,7 +18,7 @@ object EntryPoint extends App {
   }
 
   val sparkSession = SparkSession.builder()
-    .appName("my_executor")
+    .appName("File transfer app")
     .config("spark.master", "local")
     .getOrCreate()
 
@@ -52,12 +51,9 @@ object EntryPoint extends App {
     AzureStoreConnector.uploadFileBulk(fileSystem, dataLakeDirectoryClient, "hotel_weather.parquet", s"$hotel_weatherLocalPath/$hotel_weatherInputFileName")
 
     //transformations
-
-
-
   }
   catch {
-        // if the files does not exists locally -> retrieve them first
+    // if the files does not exists locally -> retrieve them first
     case ex: AnalysisException =>
       println(ex)
       val hotel_weather = sparkSession
