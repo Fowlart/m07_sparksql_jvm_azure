@@ -1,4 +1,6 @@
 /.idea/
 /target/
 /src/main/resources/creds.properties
-/terraform/terraform_learn/
+/src/main/resources/expedia/
+/src/main/resources/hotel-weather/
+/src/main/resources/local-copy/
