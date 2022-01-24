@@ -43,12 +43,18 @@ object EntryPoint extends App {
     println("files was retrieved from local hash...")
     val expediaInputFileName = getListOfFiles(expediaLocalPath).filter(file => file.getName.endsWith(".avro")).head.getName
     val hotel_weatherInputFileName = getListOfFiles(hotel_weatherLocalPath).filter(file => file.getName.endsWith(".parquet")).head.getName
+
     // create container in Azure Data Lake Storage Gen2, and save data there
     val dataLakeServiceClient = AzureStoreConnector.getDataLakeServiceClient(prop.getProperty("azure.storage.accountName"), prop.getProperty("azure.storage.accountKey"))
     val fileSystem = AzureStoreConnector.deleteCreateFileSystem(dataLakeServiceClient, "db-work-container")
     val dataLakeDirectoryClient = AzureStoreConnector.createDirectory(dataLakeServiceClient, fileSystem.getFileSystemName, "input")
     AzureStoreConnector.uploadFileBulk(fileSystem, dataLakeDirectoryClient, "expedia.avro", s"$expediaLocalPath/$expediaInputFileName")
     AzureStoreConnector.uploadFileBulk(fileSystem, dataLakeDirectoryClient, "hotel_weather.parquet", s"$hotel_weatherLocalPath/$hotel_weatherInputFileName")
+
+    //transformations
+
+
+
   }
   catch {
         // if the files does not exists locally -> retrieve them first
