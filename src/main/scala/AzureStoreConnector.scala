@@ -15,9 +15,7 @@ object AzureStoreConnector {
     builder.buildClient
   }
 
-
-  def deleteCreateFileSystem(serviceClient: DataLakeServiceClient, name: String): DataLakeFileSystemClient
-  = {
+  def createFileSystem(serviceClient: DataLakeServiceClient, name: String): DataLakeFileSystemClient = {
     val date = new Date()
     serviceClient.createFileSystem(s"$name${date.getTime}")
   }

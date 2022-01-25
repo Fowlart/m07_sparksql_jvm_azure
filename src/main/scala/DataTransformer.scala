@@ -12,11 +12,8 @@ object DataTransformer extends App {
 
   val sc = sparkSession.sparkContext
 
-  val expediaLocalPath = "src/main/resources/expedia"
-  val hotel_weatherLocalPath = "src/main/resources/hotel-weather"
-
-  val cashed_hotel_weather = sparkSession.read.parquet(hotel_weatherLocalPath)
-  val cashed_expedia = sparkSession.read.format("avro").load(expediaLocalPath)
+  val cashed_hotel_weather = sparkSession.read.parquet(ConstantHelper.EXPEDIA_LOCALPATH)
+  val cashed_expedia = sparkSession.read.format("avro").load(ConstantHelper.HOTEL_WEATHER_LOCALPATH)
 
   val joining_condition = ((cashed_expedia.col("hotel_id") === cashed_hotel_weather.col("id"))
     && ((cashed_hotel_weather.col("wthr_date") === cashed_expedia.col("srch_ci"))
@@ -69,8 +66,7 @@ object DataTransformer extends App {
     .orderBy("user_id", "wthr_date")
 
   val res3 = tempView.groupBy("user_id","hotel_id")
-    .agg(
-      avg("average_temperature").as("average_temperature"), //
+    .agg(avg("average_temperature").as("average_temperature"),
     (max("avg_tmpr_c")-min("avg_tmpr_c")).as("absolute_temp_difference"))
     .orderBy(col("absolute_temp_difference").desc)
     .limit(10)
