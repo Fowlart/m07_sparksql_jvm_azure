@@ -28,4 +28,23 @@ object DataTransformer extends App {
     .withColumn("absolute_temperature_difference", col("max_temp") - col("min_temp"))
     .sort(col("absolute_temperature_difference").desc)
     .show(10)
+
+  // Top 10 busy (e.g., with the biggest visits count) hotels for each month. If visit dates refer to several months,
+  // it should be counted for all affected months.
+  cashed_expedia
+    .withColumn("month", month(col("date_time")))
+    .groupBy(col("hotel_id"), col("month"))
+    .agg(
+      sum("srch_adults_cnt")
+        .as("adults_count_sum"),
+      sum("srch_children_cnt")
+        .as("children_count_sum"),
+      sum("srch_rm_cnt")
+        .as("rm_count_sum"))
+    .withColumn("total_person_count",
+      col("children_count_sum") + col("adults_count_sum") + col("rm_count_sum"))
+    .orderBy(col("total_person_count").desc)
+    .show()
+
+
 }
